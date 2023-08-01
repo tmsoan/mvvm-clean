@@ -1,4 +1,4 @@
-package com.anos.demo.di.module
+package com.anos.demo.di.interactor
 
 import com.anos.domain.news.FetchNewsDetailsInteractor
 import com.anos.domain.news.FetchNewsDetailsInteractorImpl
@@ -7,18 +7,15 @@ import com.anos.domain.news.FetchNewsInteractorImpl
 import com.anos.domain.repository.NewsRepository
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 class InteractorModule {
     @Provides
-    @Singleton
     fun provideFetchNewsInteractor(newsRepository: NewsRepository): FetchNewsInteractor {
         return FetchNewsInteractorImpl(newsRepository)
     }
 
     @Provides
-    @Singleton
     fun provideFetchNewsDetailsInteractor(newsRepository: NewsRepository): FetchNewsDetailsInteractor {
         return FetchNewsDetailsInteractorImpl(newsRepository)
     }

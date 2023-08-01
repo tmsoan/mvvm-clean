@@ -1,4 +1,4 @@
-package com.anos.demo.di.module
+package com.anos.demo.di.repository
 
 import com.anos.data.repository.NewsRepositoryImpl
 import com.anos.domain.repository.NewsRepository
@@ -8,8 +8,9 @@ import javax.inject.Singleton
 
 @Module
 class RepositoryModule {
-    @Provides
+
     @Singleton
+    @Provides
     fun provideNewsRepository(): NewsRepository {
         return NewsRepositoryImpl()
     }

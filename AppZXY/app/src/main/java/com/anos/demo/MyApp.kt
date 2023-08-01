@@ -1,11 +1,9 @@
 package com.anos.demo
 
 import android.app.Application
-import com.anos.demo.di.DaggerIAppComponent
+import android.util.Log
 import com.anos.demo.di.IAppComponent
-import com.anos.demo.di.module.AppModule
-import com.anos.demo.di.module.InteractorModule
-import com.anos.demo.di.module.RepositoryModule
+import com.anos.demo.di.IAppComponentHolder
 
 class MyApp : Application() {
 
@@ -15,11 +13,11 @@ class MyApp : Application() {
     }
 
     private fun initAppComponents() {
-        appComponent = DaggerIAppComponent.builder()
-            .appModule(AppModule(this))
-            .repositoryModule(RepositoryModule())
-            .interactorModule(InteractorModule())
-            .build()
+        appComponent = IAppComponentHolder.get(this)
+    }
+
+    fun getFuncInApp() {
+        Log.e(MyApp::class.simpleName, "getFuncInApp >>")
     }
 
     companion object {
