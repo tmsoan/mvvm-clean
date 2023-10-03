@@ -1,4 +1,4 @@
-package com.anos.demo.list
+package com.anos.demo.view.list
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

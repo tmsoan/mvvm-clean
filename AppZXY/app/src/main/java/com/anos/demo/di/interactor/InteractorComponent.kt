@@ -3,7 +3,7 @@ package com.anos.demo.di.interactor
 import com.anos.demo.di.UserScope
 import com.anos.demo.di.repository.RepositoryComponent
 import com.anos.demo.di.repository.RepositoryComponentHolder
-import com.anos.demo.list.NewsListViewModel
+import com.anos.demo.view.list.NewsListViewModel
 import dagger.Component
 
 @UserScope

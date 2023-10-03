@@ -1,4 +1,4 @@
-package com.anos.demo.details
+package com.anos.demo.view.details
 
 import androidx.lifecycle.ViewModel
 
