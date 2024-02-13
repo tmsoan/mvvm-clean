@@ -1,8 +1,8 @@
 package com.anos.data.mapper
 
 interface BaseMapper<E, O> {
-    fun map(entity: E): O
-    fun map(entities: List<E>): List<O> {
-        return entities.map { map(it) }
+    fun mapToEntity(data: E): O
+    fun mapToEntities(lst: List<E>): List<O> {
+        return lst.map { mapToEntity(it) }
     }
 }

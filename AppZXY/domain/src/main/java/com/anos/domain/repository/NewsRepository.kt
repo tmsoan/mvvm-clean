@@ -1,6 +1,6 @@
 package com.anos.domain.repository
 
-import com.anos.data.model.NewsItem
+import com.anos.domain.entity.NewsItem
 
 interface NewsRepository {
     suspend fun fetchNews(): List<NewsItem>?

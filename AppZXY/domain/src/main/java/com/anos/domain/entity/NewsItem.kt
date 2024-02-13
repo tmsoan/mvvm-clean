@@ -1,4 +1,4 @@
-package com.anos.data.model
+package com.anos.domain.entity
 
 data class NewsItem(
     val id: String? = null,

@@ -1,6 +1,6 @@
 package com.anos.domain.news
 
-import com.anos.data.model.NewsItem
+import com.anos.domain.entity.NewsItem
 import com.anos.domain.repository.NewsRepository
 
 class FetchNewsInteractorImpl(
