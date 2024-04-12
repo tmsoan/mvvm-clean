@@ -1,4 +1,4 @@
-package com.anos.demo.view.ui.home
+package com.anos.demo.ui.home
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
