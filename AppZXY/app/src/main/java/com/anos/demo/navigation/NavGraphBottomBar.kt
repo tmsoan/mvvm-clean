@@ -1,29 +1,28 @@
 package com.anos.demo.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
-import com.anos.demo.ui.JCAppState
+import com.anos.demo.ui.state.BottomNavState
 
 @Composable
-fun JCNavHost(
-    appState: JCAppState,
-    modifier: Modifier = Modifier,
+fun NavGraphBottomBar(
+    appState: BottomNavState,
 ) {
     val navController = appState.navController
     NavHost(
         navController = navController,
         startDestination = HOME_ROUTE,
-        modifier = modifier,
     ) {
         homeScreen(
             onSearchClick = appState::navigateToSearch,
+            onProfileClick = appState::navigateToProfile,
+            onItemClick = appState::navigateToDetailsItem,
         )
         favoriteScreen()
         trendingScreen()
         settingsScreen()
-        searchScreen(
-            onBackClick = { navController.popBackStack() },
+        detailsScreen(
+            onBackClick = { navController.popBackStack() }
         )
     }
 }

@@ -1,7 +1,6 @@
-package com.anos.demo.ui
+package com.anos.demo.ui.state
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Stable
 import androidx.navigation.NavDestination
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -12,26 +11,31 @@ import com.anos.demo.navigation.HOME_ROUTE
 import com.anos.demo.navigation.SETTINGS_ROUTE
 import com.anos.demo.navigation.TRENDING_ROUTE
 import com.anos.demo.navigation.TopLevelDestination
+import com.anos.demo.navigation.navigateToDetails
 import com.anos.demo.navigation.navigateToFavorite
 import com.anos.demo.navigation.navigateToHome
-import com.anos.demo.navigation.navigateToSearch
 import com.anos.demo.navigation.navigateToSettings
 import com.anos.demo.navigation.navigateToTrending
 import kotlinx.coroutines.CoroutineScope
 
 @Composable
-fun rememberJCAppState(
+fun rememberBottomNavState(
+    rootNavController: NavHostController,
     navController: NavHostController,
     coroutineScope: CoroutineScope,
-): JCAppState {
-    return JCAppState(navController, coroutineScope)
+): BottomNavState {
+    return BottomNavState(
+        rootNavController = rootNavController,
+        navController = navController,
+        coroutineScope = coroutineScope,
+    )
 }
 
-@Stable
-class JCAppState(
+class BottomNavState(
+    private val rootNavController: NavHostController,
     val navController: NavHostController,
-    coroutineScope: CoroutineScope,
-) {
+    private val coroutineScope: CoroutineScope,
+) : AppState(rootNavController, coroutineScope) {
     val currentDestination: NavDestination?
         @Composable get() = navController.currentBackStackEntryAsState().value?.destination
 
@@ -79,9 +83,7 @@ class JCAppState(
         }
     }
 
-    fun navigateToSearch() = navController.navigateToSearch(
-        navOptions {
-            launchSingleTop = true
-        }
-    )
+    fun navigateToDetailsItem(index: Int) {
+        navController.navigateToDetails()
+    }
 }

@@ -22,6 +22,7 @@ fun NavGraphBuilder.homeScreen(
     onMenuClick: (() -> Unit)? = null,
     onSearchClick: (() -> Unit)? = null,
     onProfileClick: (() -> Unit)? = null,
+    onItemClick: ((Int) -> Unit)? = null,
 ) {
     composable(
         route = HOME_ROUTE,
@@ -36,6 +37,7 @@ fun NavGraphBuilder.homeScreen(
             onMenuClick = onMenuClick,
             onSearchClick = onSearchClick,
             onProfileClick = onProfileClick,
+            onItemClick = onItemClick,
         )
     }
 }
