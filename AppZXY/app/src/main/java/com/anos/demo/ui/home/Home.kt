@@ -28,12 +28,17 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.anos.demo.ui.base.UiState
 import kotlinx.coroutines.launch
 
 @Composable
@@ -61,9 +66,29 @@ fun HomeScreen(
     onItemClick: ((Int) -> Unit)?,
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val homeViewModel: HomeViewModel = viewModel()
+
     val tabTitles = listOf("Nóng", "Mới", "Xe 360", "Độc & lạ", "Tình yêu", "Giải trí", "Thế giới", "Pháp luật", "Bóng đá")
     val pagerState = rememberPagerState(pageCount = { tabTitles.size })
 
+    val uiState: UiState<List<String>> by homeViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        homeViewModel.fetchHotNews()
+    }
+
+    when (uiState) {
+        is UiState.Loading -> {
+            Log.e("HomeScreen", "Loading")
+        }
+        is UiState.Success -> {
+            Log.e("HomeScreen", "Success: ${(uiState as UiState.Success<List<String>>).data}")
+        }
+        is UiState.Error -> {
+            Log.e("HomeScreen", "Error: ${(uiState as UiState.Error).message}")
+        }
+    }
+    
     Column(
         Modifier
             .fillMaxSize()
@@ -139,7 +164,10 @@ fun HomeViewPager(selectedTabIndex: Int, onItemClick: ((Int) -> Unit)?) {
         Log.w("HomeViewPager", "Selected Tab Index: $selectedTabIndex")
     }
     LazyColumn {
-        items(5) {
+        items(
+            count = 15,
+            key = { it }
+        ) {
             NewsItemList(
                 selectedTabIndex = selectedTabIndex,
                 itemIndex = it,
@@ -151,7 +179,6 @@ fun HomeViewPager(selectedTabIndex: Int, onItemClick: ((Int) -> Unit)?) {
 
 @Composable
 fun NewsItemList(selectedTabIndex: Int, itemIndex: Int, onItemClick: ((Int) -> Unit)?){
-    val context = LocalContext.current
     Box(
         modifier = Modifier
             .fillMaxWidth()
