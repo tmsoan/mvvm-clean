@@ -26,7 +26,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @ExperimentalMaterial3Api
-@Preview
 @Composable
 fun MyTopAppBar(
     title: String = "App Name",
