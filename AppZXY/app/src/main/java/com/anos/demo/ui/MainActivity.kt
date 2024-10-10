@@ -21,8 +21,10 @@ import androidx.navigation.compose.rememberNavController
 import com.anos.demo.navigation.NavGraphRoot
 import com.anos.demo.ui.state.rememberRootNavState
 import com.anos.demo.ui.theme.JCApp1Theme
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

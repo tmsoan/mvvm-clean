@@ -15,10 +15,12 @@ dependencyResolutionManagement {
 
 rootProject.name = "AppZXY"
 include(":app")
-include(":data")
-include(":domain")
+include(":core:data")
 include(":feature:home")
 include(":feature:favorite")
 include(":feature:trending")
 include(":feature:settings")
 include(":core:ui")
+include(":core:model")
+include(":core:network")
+include(":core:domain")

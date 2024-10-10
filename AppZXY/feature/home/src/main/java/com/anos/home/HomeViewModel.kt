@@ -4,13 +4,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anos.domain.rss.GetRssByChannelInteractor
 import com.anos.ui.UiState
-import kotlinx.coroutines.delay
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HomeViewModel : ViewModel() {
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val getRssByChannelInteractor: GetRssByChannelInteractor
+) : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
         value = "This is home Fragment"
@@ -21,9 +27,10 @@ class HomeViewModel : ViewModel() {
     val uiState: StateFlow<UiState<List<String>>> = _uiState
 
     fun fetchHotNews() {
-        viewModelScope.launch {
-            delay(3000)
-            _uiState.value = UiState.Success(listOf("News 1", "News 2", "News 3"))
+        viewModelScope.launch(Dispatchers.IO) {
+            getRssByChannelInteractor("the-gioi").let {
+                _uiState.value = UiState.Success(it.articles.map { it.title.orEmpty() })
+            }
         }
     }
 }
