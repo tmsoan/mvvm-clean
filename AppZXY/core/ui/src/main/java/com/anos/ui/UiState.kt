@@ -1,4 +1,4 @@
-package com.anos.demo.ui.base
+package com.anos.ui
 
 sealed interface UiState<out T> {
     data class Success<T>(val data: T) : UiState<T>

@@ -7,15 +7,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navOptions
 import com.anos.demo.navigation.FAVORITE_ROUTE
-import com.anos.demo.navigation.HOME_ROUTE
 import com.anos.demo.navigation.SETTINGS_ROUTE
 import com.anos.demo.navigation.TRENDING_ROUTE
 import com.anos.demo.navigation.TopLevelDestination
 import com.anos.demo.navigation.navigateToDetails
 import com.anos.demo.navigation.navigateToFavorite
-import com.anos.demo.navigation.navigateToHome
 import com.anos.demo.navigation.navigateToSettings
 import com.anos.demo.navigation.navigateToTrending
+import com.anos.home.navigation.HOME_ROUTE
+import com.anos.home.navigation.navigateToHome
 import kotlinx.coroutines.CoroutineScope
 
 @Composable

@@ -3,6 +3,7 @@ package com.anos.demo.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import com.anos.demo.ui.state.BottomNavState
+import com.anos.home.navigation.*
 
 @Composable
 fun NavGraphBottomBar(

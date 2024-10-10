@@ -1,47 +1,20 @@
 plugins {
-    id("kotlin-kapt")
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
 }
 
 android {
-    namespace = "com.anos.demo"
+    namespace = "com.anos.home"
     compileSdk = 34
-
-    defaultConfig {
-        applicationId = "com.anos.demo"
-        minSdk = 24
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-    }
-
-    buildTypes {
-        release {
-            isMinifyEnabled = false
-            proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
-            )
-        }
-    }
-    buildFeatures {
-        viewBinding = true
-        compose = true
-    }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_17
     }
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":data")))
-    implementation(project(mapOf("path" to ":domain")))
-    implementation(project(":feature:home"))
+    implementation(project(":core:ui"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -66,5 +39,4 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
 
     implementation(libs.android.dagger2)
-    kapt(libs.android.dagger2.compiler)
 }

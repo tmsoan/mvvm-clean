@@ -17,3 +17,8 @@ rootProject.name = "AppZXY"
 include(":app")
 include(":data")
 include(":domain")
+include(":feature:home")
+include(":feature:favorite")
+include(":feature:trending")
+include(":feature:settings")
+include(":core:ui")

@@ -1,11 +1,11 @@
-package com.anos.demo.navigation
+package com.anos.home.navigation
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
-import com.anos.demo.ui.home.HomeRoute
+import com.anos.home.HomeRoute
 
 const val HOME_ROUTE = "home_route"
 private const val DEEP_LINK_URI_PATTERN =
