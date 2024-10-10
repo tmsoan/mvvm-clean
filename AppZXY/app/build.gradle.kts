@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.hilt.android)
 }
 
 android {
@@ -39,8 +40,8 @@ android {
 }
 
 dependencies {
-    implementation(project(mapOf("path" to ":data")))
-    implementation(project(mapOf("path" to ":domain")))
+    implementation(project(":core:data"))
+    implementation(project(":core:domain"))
     implementation(project(":feature:home"))
 
     implementation(libs.androidx.core.ktx)
@@ -65,6 +66,7 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
 
-    implementation(libs.android.dagger2)
-    kapt(libs.android.dagger2.compiler)
+    implementation(libs.android.hilt)
+    kapt(libs.android.hilt.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 }

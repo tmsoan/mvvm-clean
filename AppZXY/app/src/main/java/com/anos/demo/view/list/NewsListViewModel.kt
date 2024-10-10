@@ -2,7 +2,6 @@ package com.anos.demo.view.list
 
 import android.util.Log
 import androidx.lifecycle.*
-import com.anos.demo.di.interactor.InteractorComponentHolder
 import com.anos.domain.entity.NewsItem
 import com.anos.domain.news.FetchNewsDetailsInteractor
 import com.anos.domain.news.FetchNewsInteractor
@@ -11,10 +10,6 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class NewsListViewModel : ViewModel() {
-
-    init {
-        InteractorComponentHolder.get().inject(this)
-    }
 
     @Inject
     lateinit var fetchNewsInteractor: FetchNewsInteractor

@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.anos.ui.UiState
@@ -44,12 +45,19 @@ fun HomeRoute(
     onSearchClick: (() -> Unit)? = null,
     onProfileClick: (() -> Unit)? = null,
     onItemClick: ((Int) -> Unit)? = null,
+    homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
+    val uiState: UiState<List<String>> by homeViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        homeViewModel.fetchHotNews()
+    }
     HomeScreen(
         onMenuClick = onMenuClick,
         onSearchClick = onSearchClick,
         onProfileClick = onProfileClick,
         onItemClick = onItemClick,
+        uiState = uiState,
     )
 }
 
@@ -60,25 +68,19 @@ fun HomeScreen(
     onSearchClick: (() -> Unit)?,
     onProfileClick: (() -> Unit)?,
     onItemClick: ((Int) -> Unit)?,
+    uiState: UiState<List<String>>,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val homeViewModel: HomeViewModel = viewModel()
 
     val tabTitles = listOf("Nóng", "Mới", "Xe 360", "Độc & lạ", "Tình yêu", "Giải trí", "Thế giới", "Pháp luật", "Bóng đá")
     val pagerState = rememberPagerState(pageCount = { tabTitles.size })
-
-    val uiState: UiState<List<String>> by homeViewModel.uiState.collectAsStateWithLifecycle()
-
-    LaunchedEffect(Unit) {
-        homeViewModel.fetchHotNews()
-    }
 
     when (uiState) {
         is UiState.Loading -> {
             Log.e("HomeScreen", "Loading")
         }
         is UiState.Success -> {
-            Log.e("HomeScreen", "Success: ${(uiState as UiState.Success<List<String>>).data}")
+            Log.e("HomeScreen", "Success: ${uiState.data.joinToString("\n") { it }}")
         }
         is UiState.Error -> {
             Log.e("HomeScreen", "Error: ${(uiState as UiState.Error).message}")
