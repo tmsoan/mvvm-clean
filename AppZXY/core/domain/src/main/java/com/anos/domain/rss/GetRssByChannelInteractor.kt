@@ -8,6 +8,12 @@ class GetRssByChannelInteractor @Inject constructor(
     private val rssRepository: RssRepository
 ) {
     suspend operator fun invoke(channel: String): Feed {
-        return rssRepository.getRssByChannel(channel)
+        return runCatching {
+            rssRepository.getRssByChannel(channel)
+        }.onFailure {
+            it.printStackTrace()
+        }.getOrNull() ?: Feed(
+            channelTitle = "${channel.uppercase()} - Empty page"
+        )
     }
 }

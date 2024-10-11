@@ -83,7 +83,7 @@ class BottomNavState(
         }
     }
 
-    fun navigateToDetailsItem(index: Int) {
+    fun navigateToDetailsItem(article: Any) {
         navController.navigateToDetails()
     }
 }

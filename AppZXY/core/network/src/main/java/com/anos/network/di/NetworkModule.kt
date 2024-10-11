@@ -91,6 +91,6 @@ class NetworkModule {
     }
 
     private companion object {
-        const val TIME_OUT = 60L
+        const val TIME_OUT = 10L
     }
 }

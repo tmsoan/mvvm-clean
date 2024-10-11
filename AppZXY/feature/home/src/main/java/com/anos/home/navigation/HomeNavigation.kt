@@ -6,6 +6,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import androidx.navigation.navDeepLink
 import com.anos.home.HomeRoute
+import com.anos.model.Article
 
 const val HOME_ROUTE = "home_route"
 private const val DEEP_LINK_URI_PATTERN =
@@ -19,7 +20,7 @@ fun NavGraphBuilder.homeScreen(
     onMenuClick: (() -> Unit)? = null,
     onSearchClick: (() -> Unit)? = null,
     onProfileClick: (() -> Unit)? = null,
-    onItemClick: ((Int) -> Unit)? = null,
+    onItemClick: ((Article) -> Unit)? = null,
 ) {
     composable(
         route = HOME_ROUTE,

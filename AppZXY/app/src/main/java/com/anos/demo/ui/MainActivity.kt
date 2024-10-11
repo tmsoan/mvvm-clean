@@ -56,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun SplashScreen(onInitializationComplete: () -> Unit) {
     LaunchedEffect(Unit) {
-        delay(1500)
+        delay(500)
         onInitializationComplete()
     }
     Box(
