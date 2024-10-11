@@ -1,8 +1,11 @@
 package com.anos.ui
 
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.layout.ContentScale
@@ -20,5 +23,17 @@ fun NewsItemImage(
     GlideImage(
         imageModel = { imageUrl },
         modifier = modifier,
+        failure = {
+            Box(
+                modifier = Modifier.matchParentSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "no image",
+                    color = Color.Gray.copy(alpha = 0.5f),
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+        }
     )
 }
