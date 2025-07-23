@@ -1,0 +1,47 @@
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:width="44dp" android:gravity="left">
+        <shape>
+            <solid android:color="#FF0000" /> <!-- Red -->
+        </shape>
+    </item>
+    <item android:width="44dp" android:gravity="left|start">
+        <shape>
+            <solid android:color="#FF8000" /> <!-- Orange -->
+        </shape>
+    </item>
+    <item android:width="44dp" android:gravity="center_horizontal">
+        <shape>
+            <solid android:color="#FFFF00" /> <!-- Yellow -->
+        </shape>
+    </item>
+    <item android:width="44dp" android:gravity="center">
+        <shape>
+            <solid android:color="#80FF00" /> <!-- Light Green -->
+        </shape>
+    </item>
+    <item android:width="44dp" android:gravity="center">
+        <shape>
+            <solid android:color="#00FF00" /> <!-- Green -->
+        </shape>
+    </item>
+    <item android:width="44dp" android:gravity="right">
+        <shape>
+            <solid android:color="#00FFFF" /> <!-- Cyan -->
+        </shape>
+    </item>
+    <item android:width="44dp" android:gravity="right">
+        <shape>
+            <solid android:color="#0000FF" /> <!-- Blue -->
+        </shape>
+    </item>
+    <item android:width="44dp" android:gravity="right|end">
+        <shape>
+            <solid android:color="#8000FF" /> <!-- Violet -->
+        </shape>
+    </item>
+    <item android:width="44dp" android:gravity="end">
+        <shape>
+            <solid android:color="#FF00FF" /> <!-- Magenta -->
+        </shape>
+    </item>
+</layer-list>

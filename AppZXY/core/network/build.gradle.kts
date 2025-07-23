@@ -9,7 +9,7 @@ plugins {
 
 android {
     namespace = "com.anos.network"
-    compileSdk = 34
+    compileSdk = 36
     buildFeatures {
         buildConfig = true
     }
@@ -17,8 +17,8 @@ android {
         buildConfigField("String", "BASE_URL", "\"https://vnexpress.net\"")
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 

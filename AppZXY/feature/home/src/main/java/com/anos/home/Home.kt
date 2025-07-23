@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -49,6 +50,7 @@ import com.anos.model.Feed
 import com.anos.ui.NewsItemImage
 import com.anos.ui.p_1
 import com.anos.ui.p_2
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -102,62 +104,17 @@ fun HomeScreen(
     Column(
         Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
+//            .background(MaterialTheme.colorScheme.background)
+            .background(Color.Transparent)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            IconButton(
-                modifier = Modifier.size(40.dp),
-                onClick = { coroutineScope.launch { onMenuClick?.invoke() } },
-            ) {
-                Icon(imageVector = Icons.Default.Menu, contentDescription = null)
-            }
-            ScrollableTabRow(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f),
-                selectedTabIndex = pagerState.currentPage,
-                contentColor = Color.Black,
-                edgePadding = 0.dp,
-                divider = { },
-            ) {
-                tabTitles.forEachIndexed { index, title ->
-                    Tab(
-                        modifier = Modifier.height(40.dp),
-                        selected = pagerState.currentPage == index,
-                        onClick = {
-                            coroutineScope.launch {
-                                pagerState.animateScrollToPage(index)
-                            }
-                        },
-                        text = {
-                            Text(
-                                text = title,
-                                modifier = Modifier.padding(vertical = 8.dp),
-                            )
-                        }
-                    )
-                }
-            }
-            Row(
-                modifier = Modifier.padding(horizontal = 8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                IconButton(
-                    modifier = Modifier.size(40.dp),
-                    onClick = { coroutineScope.launch { onSearchClick?.invoke() } },
-                ) {
-                    Icon(imageVector = Icons.Default.Search, contentDescription = null)
-                }
-                IconButton(
-                    modifier = Modifier.size(40.dp),
-                    onClick = { coroutineScope.launch { onProfileClick?.invoke() } },
-                ) {
-                    Icon(imageVector = Icons.Default.AccountCircle, contentDescription = null)
-                }
-            }
-        }
+        HomeTabBar(
+            tabTitles = tabTitles,
+            pagerState = pagerState,
+            coroutineScope = coroutineScope,
+            onMenuClick = onMenuClick,
+            onSearchClick = onSearchClick,
+            onProfileClick = onProfileClick,
+        )
         HorizontalPager(
             state = pagerState,
             userScrollEnabled = true,
@@ -170,6 +127,74 @@ fun HomeScreen(
                 onItemClick = onItemClick,
                 onFetchFeedRequest = onFetchFeedRequest,
             )
+        }
+    }
+}
+
+@Composable
+fun HomeTabBar(
+    tabTitles: List<String>,
+    pagerState: PagerState,
+    coroutineScope: CoroutineScope,
+    onMenuClick: (() -> Unit)?,
+    onSearchClick: (() -> Unit)?,
+    onProfileClick: (() -> Unit)?,
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+    ) {
+        IconButton(
+            modifier = Modifier.size(44.dp),
+            onClick = { coroutineScope.launch { onMenuClick?.invoke() } },
+        ) {
+            Icon(imageVector = Icons.Default.Menu, contentDescription = null)
+        }
+        ScrollableTabRow(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(1f),
+            containerColor = Color.Transparent,
+            selectedTabIndex = pagerState.currentPage,
+            edgePadding = 0.dp,
+            divider = { },
+        ) {
+            tabTitles.forEachIndexed { index, title ->
+                Tab(
+                    modifier = Modifier
+                        .height(44.dp),
+                    unselectedContentColor = Color.Gray,
+                    selectedContentColor = Color.Black,
+                    selected = pagerState.currentPage == index,
+                    onClick = {
+                        coroutineScope.launch {
+                            pagerState.animateScrollToPage(index)
+                        }
+                    },
+                    text = {
+                        Text(
+                            text = title,
+                            modifier = Modifier.padding(vertical = 8.dp),
+                        )
+                    }
+                )
+            }
+        }
+        Row(
+            modifier = Modifier.padding(horizontal = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconButton(
+                modifier = Modifier.size(44.dp),
+                onClick = { coroutineScope.launch { onSearchClick?.invoke() } },
+            ) {
+                Icon(imageVector = Icons.Default.Search, contentDescription = null)
+            }
+            IconButton(
+                modifier = Modifier.size(44.dp),
+                onClick = { coroutineScope.launch { onProfileClick?.invoke() } },
+            ) {
+                Icon(imageVector = Icons.Default.AccountCircle, contentDescription = null)
+            }
         }
     }
 }

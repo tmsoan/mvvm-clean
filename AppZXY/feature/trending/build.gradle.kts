@@ -5,10 +5,10 @@ plugins {
 
 android {
     namespace = "com.anos.trending"
-    compileSdk = 34
+    compileSdk = 36
     compileOptions {
-        targetCompatibility = JavaVersion.VERSION_17
-        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_21
+        sourceCompatibility = JavaVersion.VERSION_21
     }
 }
 
