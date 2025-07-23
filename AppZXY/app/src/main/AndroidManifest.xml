@@ -24,12 +24,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".view.details.NewsDetailsActivity"
-            android:exported="false" />
-        <activity
-            android:name=".view.list.NewsListActivity"
-            android:exported="false" />
     </application>
 
 </manifest>

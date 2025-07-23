@@ -1,4 +1,4 @@
-package com.anos.home
+package com.anos.home.constant
 
 object RssConstants {
     val channels = mapOf(
