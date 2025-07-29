@@ -7,6 +7,7 @@ import com.anos.home.constant.RssConstants
 import com.anos.model.Feed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -37,7 +38,7 @@ class HomeViewModel @Inject constructor(
             _uiState.update {
                 it.copy(isLoading = true)
             }
-            if (!forceUpdate && _uiState.value.feedMap.get(channel)?.articles?.isNotEmpty() == true) {
+            if (!forceUpdate && _uiState.value.feedMap[channel]?.articles?.isNotEmpty() == true) {
                 _uiState.update {
                     it.copy(
                         feedMap = it.feedMap,

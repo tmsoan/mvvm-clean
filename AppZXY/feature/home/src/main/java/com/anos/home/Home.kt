@@ -3,7 +3,6 @@ package com.anos.home
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
@@ -22,17 +21,20 @@ import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material3.Divider
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -50,7 +52,6 @@ import com.anos.model.Feed
 import com.anos.ui.NewsItemImage
 import com.anos.ui.p_1
 import com.anos.ui.p_2
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 @Composable
@@ -71,8 +72,8 @@ fun HomeRoute(
         onSearchClick = onSearchClick,
         onProfileClick = onProfileClick,
         onItemClick = onItemClick,
-        onFetchFeedRequest = { channel ->
-            homeViewModel.getFeedByChannel(channel)
+        onFetchFeedRequest = { channel, pullToRefresh ->
+            homeViewModel.getFeedByChannel(channel, forceUpdate = pullToRefresh)
         },
         uiState = uiState,
     )
@@ -84,19 +85,17 @@ fun HomeScreen(
     onSearchClick: (() -> Unit)?,
     onProfileClick: (() -> Unit)?,
     onItemClick: ((Article) -> Unit)?,
-    onFetchFeedRequest: ((String) -> Unit)?,
+    onFetchFeedRequest: ((String, Boolean) -> Unit)?,
     uiState: HomeUiState,
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val tabTitles = uiState.channels.map { it.value }
     val pagerState = rememberPagerState(pageCount = { tabTitles.size })
     if (pagerState.pageCount == 0) {
-        // TODO Loading
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center,
         ) {
-            Text("Loading...")
+            CircularProgressIndicator()
         }
         return
     }
@@ -104,13 +103,11 @@ fun HomeScreen(
     Column(
         Modifier
             .fillMaxSize()
-//            .background(MaterialTheme.colorScheme.background)
-            .background(Color.Transparent)
+            .background(MaterialTheme.colorScheme.background)
     ) {
         HomeTabBar(
             tabTitles = tabTitles,
             pagerState = pagerState,
-            coroutineScope = coroutineScope,
             onMenuClick = onMenuClick,
             onSearchClick = onSearchClick,
             onProfileClick = onProfileClick,
@@ -119,14 +116,16 @@ fun HomeScreen(
             state = pagerState,
             userScrollEnabled = true,
         ) { index ->
-            val channel = uiState.channels.keys.elementAtOrNull(index) ?: ""
-            HomeViewPager(
-                channel = channel,
-                feed = uiState.feedMap[channel],
-                selectedTabIndex = index,
-                onItemClick = onItemClick,
-                onFetchFeedRequest = onFetchFeedRequest,
-            )
+            uiState.channels.keys.elementAtOrNull(index)?.let { channel ->
+                HomeViewPage(
+                    channel = channel,
+                    feed = uiState.feedMap[channel],
+                    selectedTabIndex = index,
+                    onItemClick = onItemClick,
+                    onFetchFeedRequest = onFetchFeedRequest,
+                    isRefreshing = uiState.isLoading
+                )
+            }
         }
     }
 }
@@ -135,17 +134,17 @@ fun HomeScreen(
 fun HomeTabBar(
     tabTitles: List<String>,
     pagerState: PagerState,
-    coroutineScope: CoroutineScope,
     onMenuClick: (() -> Unit)?,
     onSearchClick: (() -> Unit)?,
     onProfileClick: (() -> Unit)?,
 ) {
+    val coroutineScope = rememberCoroutineScope()
     Row(
         modifier = Modifier.fillMaxWidth(),
     ) {
         IconButton(
             modifier = Modifier.size(44.dp),
-            onClick = { coroutineScope.launch { onMenuClick?.invoke() } },
+            onClick = { onMenuClick?.invoke() },
         ) {
             Icon(imageVector = Icons.Default.Menu, contentDescription = null)
         }
@@ -166,9 +165,7 @@ fun HomeTabBar(
                     selectedContentColor = Color.Black,
                     selected = pagerState.currentPage == index,
                     onClick = {
-                        coroutineScope.launch {
-                            pagerState.animateScrollToPage(index)
-                        }
+                        coroutineScope.launch { pagerState.animateScrollToPage(index) }
                     },
                     text = {
                         Text(
@@ -199,56 +196,75 @@ fun HomeTabBar(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeViewPager(
+fun HomeViewPage(
     channel: String,
     feed: Feed?,
     selectedTabIndex: Int,
     onItemClick: ((Article) -> Unit)?,
-    onFetchFeedRequest: ((String) -> Unit)?,
+    onFetchFeedRequest: ((String, Boolean) -> Unit)?,
+    isRefreshing: Boolean = false,
 ) {
+    val articles = feed?.articles ?: emptyList()
+    val pullToRefreshState = rememberPullToRefreshState()
+
     LaunchedEffect(selectedTabIndex) {
-        // Do something when selectedTabIndex changes
         Log.w("HomeViewPager", "Selected $channel: $selectedTabIndex")
-        // Fetch feed by channel
-        onFetchFeedRequest?.invoke(channel)
+        onFetchFeedRequest?.invoke(channel, false)
     }
-    if (feed == null || feed.articles.isEmpty()) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(text = feed?.channelTitle.orEmpty())
-        }
+
+    if (articles.isEmpty() && !isRefreshing) {
+        EmptyPageView(channel = channel)
         return
     }
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
+
+    PullToRefreshBox(
+        state = pullToRefreshState,
+        isRefreshing = isRefreshing,
+        onRefresh = {
+            Log.w("HomeViewPager", "Pull to refresh for $channel")
+            onFetchFeedRequest?.invoke(channel, true)
+        }
     ) {
-        items(
-            count = feed.articles.size,
-            key = { it }
-        ) { index ->
-            NewsItemList(
-                index = index,
-                article = feed.articles[index],
-                onItemClick = onItemClick,
-            )
-            Divider(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = p_2),
-                color = Color.Gray.copy(alpha = 0.5f),
-                thickness = 0.5.dp
-            )
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize(),
+        ) {
+            items(
+                count = articles.size,
+                key = { it }
+            ) { index ->
+                NewsItemList(
+                    article = articles[index],
+                    onItemClick = onItemClick,
+                )
+                HorizontalDivider(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = p_2),
+                    thickness = 0.5.dp,
+                    color = Color.Gray.copy(alpha = 0.5f)
+                )
+            }
         }
     }
 }
 
 @Composable
+private fun EmptyPageView(
+    channel: String,
+) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center,
+    ) {
+        Text(text = "No articles found for $channel")
+    }
+}
+
+@Composable
 fun NewsItemList(
-    index: Int,
     article: Article,
     onItemClick: ((Article) -> Unit)?
 ) {

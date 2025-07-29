@@ -1,6 +1,8 @@
 package com.anos.network.di
 
+import android.content.Context
 import com.anos.network.BuildConfig
+import com.anos.network.interceptor.CacheInterceptor
 import com.anos.network.interceptor.RssLogInterceptor
 import com.anos.network.rest.RssApi
 import dagger.Module
@@ -8,12 +10,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
+import okhttp3.Cache
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.converter.simplexml.SimpleXmlConverterFactory
+import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
@@ -21,6 +25,12 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 class NetworkModule {
+    @Singleton
+    @Provides
+    fun provideCacheInterceptor(): CacheInterceptor {
+        return CacheInterceptor()
+    }
+
     @Singleton
     @Provides
     fun provideRssLogInterceptor(): RssLogInterceptor {
@@ -42,8 +52,10 @@ class NetworkModule {
     @Provides
     @Singleton
     fun provideOkHttp(
+        applicationContext: Context,
         builder: OkHttpClient.Builder,
-        rssLogInterceptor: RssLogInterceptor
+        rssLogInterceptor: RssLogInterceptor,
+        cacheInterceptor: CacheInterceptor
     ): OkHttpClient {
         return builder.apply {
             if (BuildConfig.DEBUG) {
@@ -54,6 +66,10 @@ class NetworkModule {
             connectTimeout(TIME_OUT, TimeUnit.SECONDS)
             readTimeout(TIME_OUT, TimeUnit.SECONDS)
             addInterceptor(rssLogInterceptor)
+
+            // Add cache interceptor to handle caching of responses
+//            cache(Cache(File(applicationContext.cacheDir, "http_cache"), 10 * 1024 * 1024)) // 10 MB cache
+//            addInterceptor(cacheInterceptor)
         }.build()
     }
 
