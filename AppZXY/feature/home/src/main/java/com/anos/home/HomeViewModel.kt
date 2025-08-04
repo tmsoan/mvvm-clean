@@ -7,11 +7,11 @@ import com.anos.home.constant.RssConstants
 import com.anos.model.Feed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -34,7 +34,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getFeedByChannel(channel: String, forceUpdate: Boolean = false) {
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch {
             _uiState.update {
                 it.copy(isLoading = true)
             }
@@ -47,15 +47,14 @@ class HomeViewModel @Inject constructor(
                 }
                 return@launch
             }
-            getRssByChannelInteractor(channel).let { feed ->
-                _uiState.update {
-                    it.copy(
-                        feedMap = it.feedMap.apply {
-                            put(channel, feed)
-                        },
-                        isLoading = false
-                    )
-                }
+            val feed = withContext(Dispatchers.IO) {
+                getRssByChannelInteractor(channel)
+            }
+            _uiState.update {
+                it.copy(
+                    feedMap = it.feedMap.apply { put(channel, feed) },
+                    isLoading = false
+                )
             }
         }
     }
