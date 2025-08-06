@@ -1,4 +1,4 @@
-package com.anos.demo
+package com.anos.common
 
 import org.junit.Test
 
@@ -11,15 +11,7 @@ import org.junit.Assert.*
  */
 class ExampleUnitTest {
     @Test
-    fun testFunc() {
-        val prices = intArrayOf(7,1,5,3,6,4)
-        val expected = 5
-
-        val output = maxProfit(prices)
-        assert(output == expected)
+    fun addition_isCorrect() {
+        assertEquals(4, 2 + 2)
     }
-}
-
-fun maxProfit(prices: IntArray): Int {
-
 }

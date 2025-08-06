@@ -1,5 +1,6 @@
 package com.anos.demo.navigation
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import com.anos.demo.ui.state.BottomNavState
@@ -8,6 +9,7 @@ import com.anos.home.navigation.*
 @Composable
 fun NavGraphBottomBar(
     appState: BottomNavState,
+    snackbarHostState: SnackbarHostState,
 ) {
     val navController = appState.navController
     NavHost(
@@ -18,6 +20,7 @@ fun NavGraphBottomBar(
             onSearchClick = appState::navigateToSearch,
             onProfileClick = appState::navigateToProfile,
             onItemClick = appState::navigateToDetailsItem,
+            snackbarHostState = snackbarHostState,
         )
         favoriteScreen()
         trendingScreen()

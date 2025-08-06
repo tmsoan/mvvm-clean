@@ -1,5 +1,6 @@
 package com.anos.home
 
+import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,13 +25,17 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.outlined.DateRange
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -38,12 +43,14 @@ import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -52,6 +59,7 @@ import com.anos.model.Feed
 import com.anos.ui.NewsItemImage
 import com.anos.ui.p_1
 import com.anos.ui.p_2
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @Composable
@@ -60,25 +68,41 @@ fun HomeRoute(
     onSearchClick: (() -> Unit)? = null,
     onProfileClick: (() -> Unit)? = null,
     onItemClick: ((Article) -> Unit)? = null,
+    snackbarHostState: SnackbarHostState,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
+    val channels: Map<String, String> by homeViewModel.channels.collectAsStateWithLifecycle()
     val uiState: HomeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
-    LaunchedEffect(Unit) {
-        homeViewModel.getRssChannels()
-    }
     HomeScreen(
         onMenuClick = onMenuClick,
         onSearchClick = onSearchClick,
         onProfileClick = onProfileClick,
         onItemClick = onItemClick,
         onFetchFeedRequest = { channel, pullToRefresh ->
-            homeViewModel.getFeedByChannel(channel, forceUpdate = pullToRefresh)
+            when {
+                pullToRefresh -> {
+                    homeViewModel.refreshSelectedChannel()
+                }
+                else -> {
+                    homeViewModel.setSelectedChannel(channel)
+                }
+            }
         },
+        channels = channels,
         uiState = uiState,
     )
+
+    // snackBar, check if any error occurred during fetching feeds
+    LaunchedEffect(Unit) {
+        homeViewModel.errorEvent.collectLatest {
+            Log.d("HomeRoute", "Showing snackbar: $it")
+            snackbarHostState.showSnackbar(message = it)
+        }
+    }
 }
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun HomeScreen(
     onMenuClick: (() -> Unit)?,
@@ -86,9 +110,10 @@ fun HomeScreen(
     onProfileClick: (() -> Unit)?,
     onItemClick: ((Article) -> Unit)?,
     onFetchFeedRequest: ((String, Boolean) -> Unit)?,
+    channels: Map<String, String>,
     uiState: HomeUiState,
 ) {
-    val tabTitles = uiState.channels.map { it.value }
+    val tabTitles = channels.map { it.value }
     val pagerState = rememberPagerState(pageCount = { tabTitles.size })
     if (pagerState.pageCount == 0) {
         Box(
@@ -116,17 +141,18 @@ fun HomeScreen(
             state = pagerState,
             userScrollEnabled = true,
         ) { index ->
-            uiState.channels.keys.elementAtOrNull(index)?.let { channel ->
+            channels.keys.elementAtOrNull(index)?.let { channel ->
                 HomeViewPage(
                     channel = channel,
                     feed = uiState.feedMap[channel],
                     selectedTabIndex = index,
                     onItemClick = onItemClick,
                     onFetchFeedRequest = onFetchFeedRequest,
-                    isRefreshing = uiState.isLoading
+                    isRefreshing = uiState.forceLoading,
                 )
             }
         }
+
     }
 }
 
@@ -214,11 +240,6 @@ fun HomeViewPage(
         onFetchFeedRequest?.invoke(channel, false)
     }
 
-    if (articles.isEmpty() && !isRefreshing) {
-        EmptyPageView(channel = channel)
-        return
-    }
-
     PullToRefreshBox(
         state = pullToRefreshState,
         isRefreshing = isRefreshing,
@@ -248,18 +269,6 @@ fun HomeViewPage(
                 )
             }
         }
-    }
-}
-
-@Composable
-private fun EmptyPageView(
-    channel: String,
-) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center,
-    ) {
-        Text(text = "No articles found for $channel")
     }
 }
 

@@ -9,6 +9,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.DefaultAlpha
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.unit.IntSize
+import com.skydoves.landscapist.ImageOptions
 import com.skydoves.landscapist.glide.GlideImage
 
 @Composable
@@ -18,11 +20,19 @@ fun NewsItemImage(
     alignment: Alignment = Alignment.Center,
     contentScale: ContentScale = ContentScale.Crop,
     alpha: Float = DefaultAlpha,
-    colorFilter: ColorFilter? = null
+    colorFilter: ColorFilter? = null,
+    requestSize: IntSize = IntSize(-1, -1),
 ) {
     GlideImage(
         imageModel = { imageUrl },
         modifier = modifier,
+        imageOptions = ImageOptions(
+            contentScale = contentScale,
+            alignment = alignment,
+            alpha = alpha,
+            colorFilter = colorFilter,
+            requestSize = requestSize
+        ),
         failure = {
             Box(
                 modifier = Modifier.matchParentSize(),

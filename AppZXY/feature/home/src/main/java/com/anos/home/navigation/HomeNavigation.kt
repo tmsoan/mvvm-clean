@@ -1,5 +1,6 @@
 package com.anos.home.navigation
 
+import androidx.compose.material3.SnackbarHostState
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
@@ -21,6 +22,7 @@ fun NavGraphBuilder.homeScreen(
     onSearchClick: (() -> Unit)? = null,
     onProfileClick: (() -> Unit)? = null,
     onItemClick: ((Article) -> Unit)? = null,
+    snackbarHostState: SnackbarHostState,
 ) {
     composable(
         route = HOME_ROUTE,
@@ -33,6 +35,7 @@ fun NavGraphBuilder.homeScreen(
             onSearchClick = onSearchClick,
             onProfileClick = onProfileClick,
             onItemClick = onItemClick,
+            snackbarHostState = snackbarHostState,
         )
     }
 }

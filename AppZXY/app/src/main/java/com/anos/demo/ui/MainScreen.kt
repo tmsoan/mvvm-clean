@@ -101,6 +101,7 @@ fun TabsScreen(
         content = {
             NavGraphBottomBar(
                 appState = appState,
+                snackbarHostState = snackBarHostState,
             )
         }
     )

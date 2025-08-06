@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.anos.data"
+    namespace = "com.anos.common"
     compileSdk = 36
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
@@ -15,11 +15,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:common"))
-    implementation(project(":core:domain"))
-    implementation(project(":core:network"))
-    implementation(project(":core:model"))
-
     implementation(libs.androidx.core.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

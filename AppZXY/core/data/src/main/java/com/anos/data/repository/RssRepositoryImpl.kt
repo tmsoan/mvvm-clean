@@ -1,14 +1,21 @@
 package com.anos.data.repository
 
+import com.anos.common.network.AppDispatchers
+import com.anos.common.network.Dispatcher
 import com.anos.domain.repository.RssRepository
 import com.anos.model.Feed
 import com.anos.network.rest.RssApi
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 internal class RssRepositoryImpl @Inject constructor(
-    private val rssApi: RssApi
+    private val rssApi: RssApi,
+    @Dispatcher(AppDispatchers.IO) private val ioDispatcher: CoroutineDispatcher,
 ) : RssRepository {
     override suspend fun getRssByChannel(channel: String): Feed {
-        return rssApi.getRssContent(channel)
+        return withContext(ioDispatcher) {
+            rssApi.getRssContent(channel)
+        }
     }
 }
