@@ -1,10 +1,5 @@
 package com.anos.demo
 
-import android.R.string
-
-
-
-
 fun main() {
     println("------------")
 
@@ -21,28 +16,4 @@ fun main() {
 
 fun removeDuplicates(nums: IntArray): Int {
     return 1
-}
-
-
-abstract class Xe(val number: Int = 0) {
-
-}
-
- class Oto : Xe(number = 4), IMoving, ISample {
-
-    override fun run() {
-        TODO("Not yet implemented")
-    }
-
-    override fun run1() {
-        TODO("Not yet implemented")
-    }
-}
-
-interface IMoving {
-    fun run()
-}
-
-interface ISample {
-    fun run1()
 }

@@ -1,8 +1,9 @@
 package com.anos.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anos.common.event.GlobalEvent
+import com.anos.common.event.GlobalEventBus
 import com.anos.domain.rss.GetRssByChannelUseCase
 import com.anos.home.constant.RssConstants
 import com.anos.model.Feed
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getRssByChannelUseCase: GetRssByChannelUseCase
+    private val getRssByChannelUseCase: GetRssByChannelUseCase,
+    private val globalEventBus: GlobalEventBus,
 ) : ViewModel() {
 
     private val _channels = MutableStateFlow(RssConstants.channels)
@@ -41,6 +43,10 @@ class HomeViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    fun triggerEventBus(event: GlobalEvent) {
+        globalEventBus.emit(event)
     }
 
     fun setSelectedChannel(channel: String) {
