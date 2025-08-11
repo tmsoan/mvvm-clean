@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package com.anos.common.network.di
+package com.anos.common.di
 
-import com.anos.common.network.AppDispatchers
-import com.anos.common.network.Dispatcher
+import com.anos.common.AppDispatchers
+import com.anos.common.Dispatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

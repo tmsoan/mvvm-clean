@@ -1,7 +1,7 @@
 package com.anos.data.repository
 
-import com.anos.common.network.AppDispatchers
-import com.anos.common.network.Dispatcher
+import com.anos.common.AppDispatchers
+import com.anos.common.Dispatcher
 import com.anos.domain.repository.RssRepository
 import com.anos.model.Feed
 import com.anos.network.rest.RssApi
