@@ -66,7 +66,7 @@ fun HomeRoute(
     snackbarHostState: SnackbarHostState,
     homeViewModel: HomeViewModel = hiltViewModel(),
 ) {
-    val channels: Map<String, String> by homeViewModel.channels.collectAsStateWithLifecycle()
+    val channels: Map<String, String> by homeViewModel.rssChannels.collectAsStateWithLifecycle()
     val uiState: HomeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
     HomeScreen(

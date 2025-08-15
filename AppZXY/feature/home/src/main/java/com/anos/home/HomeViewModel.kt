@@ -23,10 +23,10 @@ class HomeViewModel @Inject constructor(
     private val globalEventBus: GlobalEventBus,
 ) : ViewModel() {
 
-    private val _channels = MutableStateFlow(RssConstants.channels)
-    val channels: StateFlow<Map<String, String>> = _channels
+    private val _rssChannels = MutableStateFlow(RssConstants.channels)
+    val rssChannels: StateFlow<Map<String, String>> = _rssChannels
 
-    private val _selectedChannel = MutableStateFlow<String?>(null)
+    private val _selectedRssChannel = MutableStateFlow<String?>(null)
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState
@@ -37,7 +37,7 @@ class HomeViewModel @Inject constructor(
     init {
         // Observe selected channel changes and auto-fetch RSS
         viewModelScope.launch {
-            _selectedChannel.collectLatest { channel ->
+            _selectedRssChannel.collectLatest { channel ->
                 channel?.let {
                     getFeedByChannel(channel, forceUpdate = false)
                 }
@@ -50,11 +50,11 @@ class HomeViewModel @Inject constructor(
     }
 
     fun setSelectedChannel(channel: String) {
-        _selectedChannel.value = channel
+        _selectedRssChannel.value = channel
     }
 
     fun refreshSelectedChannel() {
-        _selectedChannel.value?.let { channel ->
+        _selectedRssChannel.value?.let { channel ->
             getFeedByChannel(channel, forceUpdate = true)
         }
     }
