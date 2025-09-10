@@ -69,6 +69,10 @@ fun HomeRoute(
     val channels: Map<String, String> by homeViewModel.rssChannels.collectAsStateWithLifecycle()
     val uiState: HomeUiState by homeViewModel.uiState.collectAsStateWithLifecycle()
 
+    LaunchedEffect(uiState.feedMap) {
+        println("News items: ${uiState.feedMap.map { "${it.key} ${it.value.articles.size}" }}")
+    }
+
     HomeScreen(
         onMenuClick = onMenuClick,
         onSearchClick = onSearchClick,

@@ -11,14 +11,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
 import com.anos.common.event.GlobalEventManager
 import com.anos.demo.navigation.NavGraphRoot
 import com.anos.demo.ui.state.rememberRootNavState
 import com.anos.demo.ui.theme.JCAppTheme
-import com.anos.home.HomeViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 

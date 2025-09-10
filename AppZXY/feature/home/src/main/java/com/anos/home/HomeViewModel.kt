@@ -2,20 +2,27 @@ package com.anos.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.anos.common.AppDispatchers
+import com.anos.common.Dispatcher
 import com.anos.common.event.GlobalEvent
 import com.anos.common.event.GlobalEventBus
 import com.anos.domain.rss.GetRssByChannelUseCase
 import com.anos.home.constant.RssConstants
 import com.anos.model.Feed
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import javax.inject.Singleton
+import kotlin.plus
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -67,7 +74,8 @@ class HomeViewModel @Inject constructor(
             }
             _uiState.update { it.copy(forceLoading = forceUpdate) }
 
-            runCatching {
+            /** Impl with normal func */
+            /*runCatching {
                 val feed = getRssByChannelUseCase(channel)
                 _uiState.update {
                     it.copy(
@@ -78,7 +86,21 @@ class HomeViewModel @Inject constructor(
             }.onFailure { throwable ->
                 _uiState.update { it.copy(forceLoading = false) }
                 _errorEvent.emit(throwable.message ?: "An error occurred while fetching feed.")
-            }
+            }*/
+
+            /** Impl with Flow */
+            getRssByChannelUseCase.invokeWithFlow(channel)
+                .catch { throwable ->
+                    _uiState.update { it.copy(forceLoading = false) }
+                    _errorEvent.emit(throwable.message ?: "An error occurred while fetching feed.")
+                }.collect { feed ->
+                    _uiState.update {
+                        it.copy(
+                            feedMap = it.feedMap.toMutableMap().apply { put(channel, feed) },
+                            forceLoading = false,
+                        )
+                    }
+                }
         }
     }
 }

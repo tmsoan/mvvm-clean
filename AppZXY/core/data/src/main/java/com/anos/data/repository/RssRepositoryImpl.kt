@@ -6,6 +6,8 @@ import com.anos.domain.repository.RssRepository
 import com.anos.model.Feed
 import com.anos.network.rest.RssApi
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -18,4 +20,10 @@ internal class RssRepositoryImpl @Inject constructor(
             rssApi.getRssContent(channel)
         }
     }
+
+    override suspend fun getRssByChannelFlow(channel: String) = flow {
+        emit(
+            rssApi.getRssContent(channel)
+        )
+    }.flowOn(ioDispatcher)
 }
